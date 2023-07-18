@@ -22,6 +22,7 @@ Meu primeiro projeto com framework Laravel
 <p>No terminal (dentro da pasta do projeto), rodar os arquivos migration para criar as tabelas no database <i>(php artisan migrate)</i></p>
 <p>Abrir o servidor (ainda dentro da pasta) <i></i></p>
 <p>Rotas: <ul>
-  <li>"localhost:</li>
+  <li>[localhost:](http://127.0.0.1:8000/deputados) -> preenche o banco de dados e retorna a API criada com as informações que precisamos</li>
+  <li>[localhost:](http://127.0.0.1:8000/show) -> usa as informações da nova API para mostrar os resultados para o usuario</li>
 </ul></p>
 
