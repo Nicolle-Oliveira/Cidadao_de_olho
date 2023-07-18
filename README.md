@@ -1,9 +1,8 @@
 # Cidadao_de_olho
 Meu primeiro projeto com framework Laravel
 
-<p>Ambiente de desenvolvimento web utilizado - Laragon</p>
+<h4>Ambiente de desenvolvimento web utilizado -> Laragon</h4>
 <br>
-
 <h4>Projeto criado com composer via terminal </h4>
 <p>(<i> composer create-project laravel/laravel cidadao_de_olho </i>)</p>
 <p> Composer - ferramenta para gerenciamento de pacotes em PHP, instala automaticamente bibliotecas externas</p>
