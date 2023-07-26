@@ -14,7 +14,6 @@ composer create-project laravel/laravel cidadao_de_olho
 <p> Composer - ferramenta para gerenciamento de pacotes em PHP, instala automaticamente bibliotecas externas</p>
 <p> Das que foram propositalmente usadas: <ul>
   <li> composer </li>
-  <li> guzzlehttp </li>
   <li> laravel </li>
 </ul></p>
 
@@ -24,10 +23,24 @@ composer create-project laravel/laravel cidadao_de_olho
 
 <br>
 <h4>Para rodar o projeto</h4>
-<p>No terminal (dentro da pasta do projeto), rodar os arquivos migration para criar as tabelas no database <i>(php artisan migrate)</i></p>
-<p>Abrir o servidor (ainda dentro da pasta) <i></i></p>
-<p>Rotas: <ul>
-  <li>[localhost:](http://127.0.0.1:8000/deputados) -> preenche o banco de dados e retorna a API criada com as informações que precisamos</li>
-  <li>[localhost:](http://127.0.0.1:8000/show) -> usa as informações da nova API para mostrar os resultados para o usuario</li>
-</ul></p>
+<p>No terminal (dentro da pasta do projeto), rodar os arquivos migration para criar as tabelas no database 
 
+```
+php artisan migrate
+```
+
+<p>Rodar também as seeds para popular o banco </p>
+
+```
+php artisan db:seed
+```
+
+<p>Abrir o servidor </p>
+
+```
+php artisan serve
+```
+
+<p>Rotas:
+        [localhost:](http://127.0.0.1:8000/deputados) ->  usa as informações da nova API para mostrar os resultados para o usuario
+</p>
