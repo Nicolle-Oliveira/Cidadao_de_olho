@@ -5,8 +5,9 @@ Meu primeiro projeto com framework Laravel
 
 <br>
 <h4>Projeto criado com composer via terminal </h4>
-
-```composer create-project laravel/laravel cidadao_de_olho```
+```
+composer create-project laravel/laravel cidadao_de_olho
+```
 
 <p> Composer - ferramenta para gerenciamento de pacotes em PHP, instala automaticamente bibliotecas externas</p>
 <p> Das que foram propositalmente usadas: <ul>
