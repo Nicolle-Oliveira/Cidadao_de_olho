@@ -8,7 +8,6 @@ Meu primeiro projeto com framework Laravel
 
 ```
 composer create-project laravel/laravel cidadao_de_olho
-
 ```
 
 
