@@ -19,5 +19,3 @@ Route::get('/', function () {
 });
 
 Route::get('/deputados', [DeputadoController::class, 'index']);
-
-Route::get('/show', [DeputadoController::class, 'show']);
