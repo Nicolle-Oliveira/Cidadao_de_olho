@@ -26,4 +26,14 @@ class Deputado extends Model
         'naturalidadeUf',
         'dataNascimento',
     ];
+
+    public function datas()
+    {
+        return $this->hasMany(Data::class, 'id_deputado');
+    }
+
+    public function redeSociais()
+    {
+        return $this->hasMany(RedeSocial::class, 'id_deputado');
+    }
 }
