@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('rede_socials', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_deputado');
+
+            $table->unsignedBigInteger('id_deputado');
+            $table->foreign('id_deputado')->references('id')->on('deputados')->onDelete('cascade');
+            
             $table->integer('id_rede');
             $table->string('nome');
             $table->string('url');
