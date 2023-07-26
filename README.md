@@ -6,14 +6,8 @@ Meu primeiro projeto com framework Laravel
 <br>
 <h4>Projeto criado com composer via terminal </h4>
 
-Some basic Git commands are:
-```
-git status
-git add
-git commit
-```
+`composer create-project laravel/laravel cidadao_de_olho`
 
-`<code> composer create-project laravel/laravel cidadao_de_olho</code>`
 <p> Composer - ferramenta para gerenciamento de pacotes em PHP, instala automaticamente bibliotecas externas</p>
 <p> Das que foram propositalmente usadas: <ul>
   <li> composer </li>
