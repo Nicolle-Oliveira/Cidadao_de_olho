@@ -1,9 +1,7 @@
 # Cidadao_de_olho
 Meu primeiro projeto com framework Laravel
-
 <h4>Ambiente de desenvolvimento web utilizado -> Laragon</h4>
 
-<br>
 <h4>Projeto criado com composer via terminal </h4>
 
 ```
@@ -41,6 +39,6 @@ php artisan db:seed
 php artisan serve
 ```
 
-<p>Rotas:
+<p>Rotas:</p>
         [localhost:](http://127.0.0.1:8000/deputados) ->  usa as informações da nova API para mostrar os resultados para o usuario
-</p>
+
