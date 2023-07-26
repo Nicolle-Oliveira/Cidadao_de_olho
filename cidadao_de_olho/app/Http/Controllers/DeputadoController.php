@@ -2,60 +2,57 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use App\Models\Deputado;
-use App\Models\Data;
 use App\Models\RedeSocial;
+use App\Models\Data;
+use App\Http\Resources\DeputadoResource;
+use App\Http\Resources\DataResource;
 
 class DeputadoController extends Controller
 {
     public function index()
     {
-        $json = file_get_contents("http://dadosabertos.almg.gov.br/ws/deputados/lista_telefonica?formato=json");
+        $api = 'http://127.0.0.1:8000/api/infos';
+        $json = file_get_contents($api);
         $lista = json_decode($json, true);
-        $meusObjetos = $lista['list'];
-        
 
-        foreach($meusObjetos as $item){
-            Deputado::create($item);
+        $deputados_aux = $lista['deputados'];
+        $redes = $lista['redes'];
 
-            foreach($item['redesSociais'] as $rede){
-                $rede1 = $rede['redeSocial'];
-                RedeSocial::create([
-                    'id_deputado' => $item['id'],
-                    'id_rede' => $rede1['id'],
-                    'nome' => $rede1['nome'],
-                    'url' => $rede1['url'],
-                    'url_deputado' => $rede['url'],
-                ]);
-            }
+        $deputados = [];
+        foreach ($deputados_aux as $key => $value) {
+            $quant = 0;
+            foreach ($value['data'] as $value) { $quant++; };
+            
+            $deputados[] = [
+                'nome' => $value['nome'],
+                'quant' => $quant,
+            ];
 
-            /* HTTP/1.1 429 Too Many Requests - ?-?
-
-
-            $json1 = file_get_contents("http://dadosabertos.almg.gov.br/ws/prestacao_contas/verbas_indenizatorias/deputados/" . $item['id'] . "/datas?formato=json");
-            $lista1 = json_decode($json1, true);
-            $minhasDatas = $lista1['list'];
-
-            //sleep(0.25);
-            foreach($minhasDatas as $data){
-                Data::create([
-                    'id_deputado' => $data['idDeputado'],
-                    'data' => $data['dataReferencia']['$'],
-                ]);
-            }*/
         }
 
-        return $this->criaAPI();
+        return view('info', compact('deputados', 'redes'));
     }
 
     public function criaAPI(){
+        //Melhor opção?
+        Data::whereYear('data', '!=', 2019)->delete();
+                
+        $deputados = Deputado::with('datas')->get();
+        $RS_ordenada = $this->contaRedes();
 
-        $info_aux = Deputado::query()->select(['id', 'nome'])->get();
-        $info_rs_aux = RedeSocial::query()->select(['id_rede', 'nome'])->get();
+        $data = DeputadoResource::collection($deputados);
 
-        $info = json_decode($info_aux);
+        return response()->json([
+            'deputados' => $data,
+            'redes' => $RS_ordenada,
+        ]);
+    }
+
+    public function contaRedes(){
+
+        $info_rs_aux = RedeSocial::query()->select(['nome'])->get();
         $info_rs = json_decode($info_rs_aux);
 
         $cria_novo = true;
@@ -64,102 +61,55 @@ class DeputadoController extends Controller
         $quants = [];
 
         foreach($info_rs as $rs){
-            foreach ($nomes as $key => $nome) {
-                 if($nome == $rs->nome){
-                     $quants[$key]++;
-                     $cria_novo = false;
-                     break;
-                 }
-            }
- 
-            if($cria_novo == true){
-             $nomes[] = $rs->nome;
-             $quants[] = 1;
-            }
- 
-            $cria_novo = true;
-        }
 
-        $redes = [];
-
-        foreach ($nomes as $key => $nome) {
-            $redes[$key]['nome'] = $nome;
-            $redes[$key]['quant'] = $quants[$key];
-        }
-
-        return response()->json([
-            'deputados' => $info,
-            'redes' => $redes,
-        ]);
-
-       
-    
-        /* TENTATIVA DE USAR OBJETO
-        Por algum motivo, so cria as duas primeiras redes :(
-        $redes = [];
-
-        foreach($info_rs as $rs){
-            echo 'rede: ' . $rs->nome . '<br>';
-            echo 'id: ' . $rs->id_rede . '<br><br>';
-
-        }
-
-        foreach($info_rs as $rs){
-            echo "<br> RODOU " . $rs->nome . "<br>";
-
-            foreach($redes as $rede){
-
-                echo "<br> ENTROU FOR1<br><br>";
-                if($rede->id == $rs->id_rede){
-                    echo '<br> ENTROU IF <br><br>';
-                    $rede->quant++;
+            foreach ($nomes as $key => $nome) {   
+                if($nome == $rs->nome){
+                    $quants[$key]++;
                     $cria_novo = false;
                     break;
                 }
             }
 
             if($cria_novo == true){
-                echo "<br> CRIOU " . $rs->nome . "<br><br>";
-                $redes[] = new RedesAqui($rs->id_rede, $rs->nome);
+                $nomes[] = $rs->nome;
+                $quants[] = 1;
             }
-            $cria_novo == true;
+
+            $cria_novo = true;
+        }  
+
+        return $this->bubble_sort($quants, $nomes);
+    }
+
+    //Algoritmo de ordenação Bubble Sort
+    //Organiza as redes sociais de ordem decrescente
+    public function bubble_sort($quants, $nomes) {
+        
+        do {
+
+            $troca = false;
+            foreach ($quants as $key => $value) {
+                if (isset($quants[$key + 1]) && $quants[$key] < $quants[$key + 1]) {
+                    
+                    $tmp = $quants[$key];
+                    $quants[$key] = $quants[$key + 1];
+                    $quants[$key + 1] = $tmp;
+
+                    $tmp = $nomes[$key];
+                    $nomes[$key] = $nomes[$key + 1];
+                    $nomes[$key + 1] = $tmp;
+
+                    $troca = true;
+                }
+            }
+        } while ($troca);
+
+        $redes = [];
+        foreach ($nomes as $key => $nome) {
+            $redes[$key]['nome'] = $nome;
+            $redes[$key]['quant'] = $quants[$key];
         }
 
-        foreach($redes as $rede){
-            echo "id: " . $rede->id . '<br>';
-            echo 'rede: ' . $rede->nome . '<br>';
-            echo 'quant: ' . $rede->quant . '<br><br>';
-
-        }*/
-
-
-    }
-
-    public function show(){
-
-
-        $api = route('infos');
-        $json = file_get_contents($api);
-        $lista = json_decode($json, true);
-        $meusObjetos = $lista['deputados'];
-        $redes = $lista['redes'];
-
-        return view('info', compact('redes'));
-
+        return $redes;
     }
 }
-
-/*Classe abandonada...
-class RedesAqui{
-
-    public $id;
-    public $nome;
-    public $quant;
-
-    public function __construct($id_s, $nome_s){
-        $this->id = $id_s;
-        $this->nome = $nome_s;
-        $this->quant = 1;
-    }
-    
-}*/
