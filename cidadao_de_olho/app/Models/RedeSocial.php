@@ -19,4 +19,8 @@ class RedeSocial extends Model
         'url_deputado',
     ];
 
+    public function deputado()
+    {
+        return $this->belongsTo(Deputado::class, 'id_deputado');
+    }
 }
