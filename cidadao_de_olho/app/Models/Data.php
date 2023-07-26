@@ -15,4 +15,9 @@ class Data extends Model
         'id_deputado',
         'data',
     ];
+
+    public function deputado()
+    {
+        return $this->belongsTo(Deputado::class, 'id_deputado');
+    }
 }
