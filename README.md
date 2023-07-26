@@ -5,10 +5,9 @@ Meu primeiro projeto com framework Laravel
 
 <br>
 <h4>Projeto criado com composer via terminal </h4>
-Some basic Git commands are:
 
 ```
-git status
+composer create-project laravel/laravel cidadao_de_olho
 git add
 git commit
 ```
