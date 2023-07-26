@@ -82,7 +82,7 @@ class DeputadoController extends Controller
     }
 
     //Algoritmo de ordenação Bubble Sort
-    //Organiza as redes sociais de ordem decrescente
+    //Organiza as redes sociais em ordem decrescente
     public function bubble_sort($quants, $nomes) {
         
         do {
